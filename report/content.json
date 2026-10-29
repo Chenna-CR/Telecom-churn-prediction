@@ -1,0 +1,2669 @@
+[
+{
+"t": "h1",
+"text": "1. INTRODUCTION"
+},
+{
+"t": "h2",
+"text": "1.1 Background and motivation"
+},
+{
+"t": "p",
+"text": "Telecommunications companies sell services on recurring plans, so the value of a customer builds up month after month, and a departure removes all the revenue that would have followed. Two practical questions follow. First, *how much revenue does a customer generate over their life with the company?* Second, *which customers are likely to leave?* Both are prediction problems. The first asks for a number and is solved with regression; the second asks for a yes/no answer and is solved with classification. Together they let a company focus its retention effort on customers who are both at risk and valuable."
+},
+{
+"t": "p",
+"text": "This project uses the IBM Telco Customer Churn data set (7,043 customers, 20 attributes) to study both problems with the methods of a first course in predictive analytics: data preprocessing, correlation analysis, simple, multiple and polynomial regression, logistic regression, k-nearest neighbours, Naive Bayes, decision trees, Random Forest and support vector machines, evaluated with MAE, MSE, RMSE, R-squared, accuracy, log loss, AUC, precision, recall, F1 score and the confusion matrix."
+},
+{
+"t": "h2",
+"text": "1.2 Problem statement"
+},
+{
+"t": "p",
+"text": "**Part A (regression).** Predict the lifetime revenue of a customer, measured by *TotalCharges* (USD billed to date), from the customer's account and service attributes, using four regression models, and select the best model for prediction. **Part B (classification).** Predict whether a customer will churn (*Churn* = Yes; 1,869 of 7,043 customers, 26.5%), using six classifiers, and select the best classifier. Finally, combine the two selected models to rank customers by risk and revenue."
+},
+{
+"t": "h2",
+"text": "1.3 Objectives"
+},
+{
+"t": "p",
+"text": "Seven specific, measurable and non-overlapping objectives were fixed before modelling. Each is answered with actual results in Chapter 4."
+},
+{
+"t": "table",
+"caption": "Research objectives and how success is measured",
+"head": [
+"ID",
+"Objective",
+"Methods",
+"Success measure"
+],
+"rows": [
+[
+"O1",
+"Understand the data: quality, correlations and churn by segment.",
+"Preprocessing, Pearson correlation, group comparison",
+"Clean data set, ranked relationships"
+],
+[
+"O2",
+"Model TotalCharges from tenure with Simple Linear Regression.",
+"Ordinary Least Squares, residual analysis",
+"Slope, intercept, MAE, RMSE, R-squared"
+],
+[
+"O3",
+"Improve the model with Multiple and Polynomial Regression.",
+"OLS with several inputs, polynomial features",
+"Lower validation RMSE"
+],
+[
+"O4",
+"Compare four regression models and select the best for prediction.",
+"MAE, MSE, RMSE, R-squared; train versus test",
+"Lowest validation RMSE without overfitting"
+],
+[
+"O5",
+"Compare six classifiers for churn.",
+"Logistic Regression, kNN, Naive Bayes, Decision Tree, Random Forest, SVM",
+"Accuracy, log loss, AUC, precision, recall, F1"
+],
+[
+"O6",
+"Select the best classifier and study its rules and errors.",
+"Tree rules, Random Forest importance, confusion matrix",
+"Best validation F1; error profile"
+],
+[
+"O7",
+"Use both selected models together to predict for customers.",
+"Predicted revenue and churn probability",
+"Four customer priority groups"
+]
+],
+"widths": [
+0.06,
+0.34,
+0.32,
+0.28
+],
+"align": [
+"c",
+"l",
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "h2",
+"text": "1.4 Objective-to-analysis mapping"
+},
+{
+"t": "table",
+"caption": "Mapping of objectives to variables, outputs and report locations",
+"head": [
+"ID",
+"Key variables",
+"Visual output",
+"Report section"
+],
+"rows": [
+[
+"O1",
+"All 19 attributes, correlations of tenure, MonthlyCharges, TotalCharges and churn",
+"Figures 2 to 4",
+"4.1"
+],
+[
+"O2",
+"tenure (input), TotalCharges (target)",
+"Figure 5",
+"4.2"
+],
+[
+"O3",
+"SeniorCitizen, tenure, MonthlyCharges and 15 categorical inputs; polynomial degree 1 to 5",
+"Figure 6",
+"4.3"
+],
+[
+"O4",
+"Four regression models; MAE, MSE, RMSE, R-squared",
+"Figures 7 to 9",
+"4.4"
+],
+[
+"O5",
+"Churn label; six classifiers; accuracy, log loss, AUC, precision, recall, F1",
+"Figures 10 to 13",
+"4.5"
+],
+[
+"O6",
+"Selected classifier; decision-tree rules; Random Forest importance",
+"Figures 14 to 16",
+"4.6"
+],
+[
+"O7",
+"Predicted TotalCharges and churn probability",
+"Figure 17",
+"4.7"
+]
+],
+"widths": [
+0.07,
+0.5,
+0.23,
+0.2
+],
+"align": [
+"c",
+"l",
+"l",
+"c"
+],
+"note": null
+},
+{
+"t": "h2",
+"text": "1.5 Link to the course syllabus"
+},
+{
+"t": "table",
+"caption": "Where each syllabus topic is used",
+"head": [
+"Unit",
+"Syllabus topic",
+"Where used in this project"
+],
+"rows": [
+[
+"I",
+"Introduction to predictive analytics; supervised learning; data preprocessing",
+"Chapters 1 to 3 (cleaning, encoding, scaling, splitting)"
+],
+[
+"II",
+"Simple, multiple and polynomial regression; OLS; correlation",
+"O1 (correlation), O2, O3, O4"
+],
+[
+"II",
+"MAE, MSE, RMSE, R-squared",
+"O2, O3, O4"
+],
+[
+"II",
+"Logistic regression",
+"O5, O6 (churn classifier)"
+],
+[
+"III",
+"k-nearest neighbours (lazy learning), Naive Bayes, decision trees and rules, SVM",
+"O5, O6"
+],
+[
+"III",
+"Random Forest (ensemble of decision trees)",
+"O4 (regression) and O5, O6 (classification)"
+],
+[
+"III",
+"Accuracy, log loss, AUC, precision, recall, F1, confusion matrix",
+"O5, O6"
+]
+],
+"widths": [
+0.08,
+0.5,
+0.42
+],
+"align": [
+"c",
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "h2",
+"text": "1.6 Tools and environment"
+},
+{
+"t": "p",
+"text": "The analysis used Python 3.12.3 with pandas 3.0.2, NumPy 2.4.4, SciPy 1.17.1, scikit-learn 1.8.0, Matplotlib 3.10.8 and seaborn 0.13.2. The work is a Jupyter Notebook (notebooks/churn_prediction.ipynb) that imports reusable code from src/churn_lib.py. A fixed random seed (42) makes every result reproducible."
+},
+{
+"t": "h2",
+"text": "1.7 Organisation of the report"
+},
+{
+"t": "p",
+"text": "Chapter 2 documents the source of the data. Chapter 3 describes the exploratory process: data audit, cleaning, preprocessing and the train/validation/test design. Chapter 4 contains the seven analyses, each with Introduction, General Description, Specific Requirements with Functions and Formulas, Analysis Results, and Visualization. Chapters 5 and 6 give the conclusion and future scope, and Chapter 7 lists the references."
+},
+{
+"t": "h1",
+"text": "2. SOURCE OF DATASET"
+},
+{
+"t": "h2",
+"text": "2.1 Provenance"
+},
+{
+"t": "p",
+"text": "The data set is the *Telco Customer Churn* sample data published by IBM as part of its Cognos Analytics sample data sets. It describes a **fictional** telecommunications company that provides home phone and internet services. IBM generated it as a teaching and benchmarking resource, so it is realistic in structure but is not a record of the customers of a real operator. Findings describe patterns in a benchmark data set and should not be presented as facts about any real company."
+},
+{
+"t": "table",
+"caption": "Sources of the dataset",
+"head": [
+"Role",
+"Source",
+"URL"
+],
+"rows": [
+[
+"Downloaded for this project",
+"IBM telco-customer-churn-on-icp4d repository (GitHub)",
+"https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv"
+],
+[
+"Popular listing",
+"Kaggle: \"Telco Customer Churn\" (blastchar)",
+"https://www.kaggle.com/datasets/blastchar/telco-customer-churn"
+],
+[
+"Description by IBM",
+"IBM Community blog: Telco customer churn",
+"https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2019/07/11/telco-customer-churn-1113"
+],
+[
+"Mirror",
+"OpenML data set \"telco-customer-churn\"",
+"https://www.openml.org/d/42178"
+]
+],
+"widths": [
+0.2,
+0.35,
+0.45
+],
+"align": [
+"l",
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The downloaded file is 970,457 bytes, has MD5 checksum 3b0bfab28a8101b4e4fdd08025a5c235, and contains 7,043 rows and 21 columns. The licence terms should be confirmed on the Kaggle and IBM pages before the file is redistributed; a copy is included in the project folder only so that the academic work is reproducible."
+},
+{
+"t": "h2",
+"text": "2.2 Description of the data"
+},
+{
+"t": "p",
+"text": "Each row is one customer. The columns fall into four groups: the churn label; the services subscribed to (phone, multiple lines, internet type, online security, online backup, device protection, technical support, streaming TV and streaming movies); account information (tenure, contract, payment method, paperless billing, monthly and total charges); and demographics (gender, senior-citizen flag, partner and dependents)."
+},
+{
+"t": "table",
+"caption": "Data dictionary",
+"head": [
+"Column",
+"Type",
+"Description"
+],
+"rows": [
+[
+"customerID",
+"Identifier",
+"Unique customer ID (dropped before modelling)"
+],
+[
+"gender",
+"Categorical",
+"Female / Male"
+],
+[
+"SeniorCitizen",
+"Binary",
+"1 if senior citizen"
+],
+[
+"Partner",
+"Binary",
+"Has a partner"
+],
+[
+"Dependents",
+"Binary",
+"Has dependents"
+],
+[
+"tenure",
+"Numeric (months)",
+"Months with the company"
+],
+[
+"PhoneService",
+"Binary",
+"Has phone service"
+],
+[
+"MultipleLines",
+"Categorical",
+"Yes / No / No phone service"
+],
+[
+"InternetService",
+"Categorical",
+"DSL / Fiber optic / No"
+],
+[
+"OnlineSecurity",
+"Categorical",
+"Yes / No / No internet service"
+],
+[
+"OnlineBackup",
+"Categorical",
+"Yes / No / No internet service"
+],
+[
+"DeviceProtection",
+"Categorical",
+"Yes / No / No internet service"
+],
+[
+"TechSupport",
+"Categorical",
+"Yes / No / No internet service"
+],
+[
+"StreamingTV",
+"Categorical",
+"Yes / No / No internet service"
+],
+[
+"StreamingMovies",
+"Categorical",
+"Yes / No / No internet service"
+],
+[
+"Contract",
+"Categorical",
+"Month-to-month / One year / Two year"
+],
+[
+"PaperlessBilling",
+"Binary",
+"Uses paperless billing"
+],
+[
+"PaymentMethod",
+"Categorical",
+"Electronic check / Mailed check / Bank transfer (automatic) / Credit card (automatic)"
+],
+[
+"MonthlyCharges",
+"Numeric (USD)",
+"Amount charged per month"
+],
+[
+"TotalCharges",
+"Numeric (USD)",
+"Total charged to date (text in the file); regression target in Part A"
+],
+[
+"Churn",
+"Target",
+"Yes if the customer left within the last month; classification target in Part B"
+]
+],
+"widths": [
+0.2,
+0.17,
+0.63
+],
+"align": [
+"l",
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "h2",
+"text": "2.3 Why this dataset was chosen"
+},
+{
+"t": "bullets",
+"items": [
+"**Two natural prediction targets.** TotalCharges is a continuous number (regression) and Churn is a binary label (classification), so one data set serves Units II and III of the syllabus.",
+"**Right size.** 7,043 rows are enough for stable train, validation and test sets and small enough to run every analysis within minutes.",
+"**Mixed variable types.** Numeric, binary and multi-level categorical columns call for encoding and scaling (Unit I).",
+"**Interpretable domain.** Contract, tenure and charges have direct business meaning, so results are easy to explain."
+]
+},
+{
+"t": "h2",
+"text": "2.4 Limitations of the dataset"
+},
+{
+"t": "bullets",
+"items": [
+"The company is fictional and the data are a single snapshot; there are no dates, so true temporal validation is impossible.",
+"*Churn* means leaving within the last month, so the rate is a point-in-time proportion, not a rate per period.",
+"There is no usage, network-quality, complaint or competitor information, which real churn models rely on.",
+"TotalCharges is billing history up to the snapshot. It is almost arithmetic in tenure and monthly charge (Section 4.3), so predicting it is a good exercise in regression but is not a forecast of *future* revenue."
+]
+},
+{
+"t": "h1",
+"text": "3. EDA PROCESS"
+},
+{
+"t": "h2",
+"text": "3.1 Data inspection"
+},
+{
+"t": "p",
+"text": "The file has 7,043 rows and 21 columns: one identifier, one target (Churn), 16 categorical or binary attributes, and three numeric attributes (tenure, MonthlyCharges, TotalCharges) plus SeniorCitizen stored as 0/1. Read with default settings, pandas finds no missing values, but TotalCharges is stored as text, which signals that a closer audit is needed."
+},
+{
+"t": "table",
+"caption": "Descriptive statistics of the numeric attributes",
+"head": [
+"Variable",
+"Mean",
+"Std. dev.",
+"Min",
+"25%",
+"Median",
+"75%",
+"Max"
+],
+"rows": [
+[
+"tenure",
+"32.37",
+"24.56",
+"0.00",
+"9.00",
+"29.00",
+"55.00",
+"72.00"
+],
+[
+"MonthlyCharges",
+"64.76",
+"30.09",
+"18.25",
+"35.50",
+"70.35",
+"89.85",
+"118.75"
+],
+[
+"TotalCharges",
+"2,279.73",
+"2,266.79",
+"0.00",
+"398.55",
+"1,394.55",
+"3,786.60",
+"8,684.80"
+]
+],
+"widths": [
+0.19,
+0.11,
+0.12,
+0.1,
+0.11,
+0.12,
+0.12,
+0.13
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "h2",
+"text": "3.2 Data quality assessment"
+},
+{
+"t": "table",
+"caption": "Data-quality checks and decisions",
+"head": [
+"Check",
+"Finding",
+"Decision"
+],
+"rows": [
+[
+"Missing cells as read",
+"0",
+"None to impute at read time"
+],
+[
+"Blank TotalCharges",
+"11 rows, all with tenure = 0",
+"Set to 0.0: a customer with no completed month has not been billed yet (logical rule)"
+],
+[
+"Duplicate customer IDs",
+"0",
+"No action"
+],
+[
+"Duplicate feature rows (ignoring ID)",
+"22",
+"Kept: identical attribute combinations can belong to different customers"
+],
+[
+"Inconsistent labels",
+"\"No internet service\" in 1,526 rows and \"No phone service\" in 682; consistent with InternetService and PhoneService",
+"Kept as an explicit category"
+],
+[
+"Outliers (1.5 x IQR rule)",
+"tenure: 0, MonthlyCharges: 0, TotalCharges: 0",
+"No outliers to treat"
+]
+],
+"widths": [
+0.24,
+0.4,
+0.36
+],
+"align": [
+"l",
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "Only the TotalCharges blanks needed action. The 22 duplicated feature rows were kept because deleting them would remove genuine customers. No numeric column has values outside the 1.5 x IQR fences, so no outlier treatment was applied."
+},
+{
+"t": "h2",
+"text": "3.3 Preprocessing: encoding and scaling"
+},
+{
+"t": "p",
+"text": "Machine-learning models need numbers. The 15 categorical attributes are converted to 0/1 indicator columns (one-hot encoding), and numeric inputs are standardised (z = (x - mean) / standard deviation) for the models that depend on distances or gradients (linear models, kNN, Naive Bayes, SVM). Tree-based models do not need scaling. After encoding, the inputs of the classification models have 45 columns. Both steps are placed inside scikit-learn Pipelines, so the means, standard deviations and categories are learned from training data only."
+},
+{
+"t": "h2",
+"text": "3.4 Target variables"
+},
+{
+"t": "p",
+"text": "In Part B the target is imbalanced: 5,174 customers stayed (73.5%) and 1,869 churned (26.5%). A model that always predicts \"stay\" would reach 73.5% accuracy and find no churner, so accuracy alone is not enough; precision, recall, F1 and AUC are reported as well, and a majority-class baseline shows what \"no skill\" looks like. In Part A the target is TotalCharges, a right-skewed number from 0 to about 8,700 USD."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig01_target_distribution.png",
+"caption": "Distribution of the churn target",
+"w": 4.4,
+"px_w": 422,
+"px_h": 286
+},
+{
+"t": "h2",
+"text": "3.5 Train, validation and test design"
+},
+{
+"t": "p",
+"text": "The data were split once, with stratification on the churn label, into a training set of 5,634 customers and a test set of 1,409 customers (20%). For choosing between models and settings, the training set was split again into a fit set of 4,225 customers (75%) and a validation set of 1,409 customers (25%). The churn rate is about 26.5% in every part. The rules that prevent leakage are:"
+},
+{
+"t": "bullets",
+"items": [
+"The test set is touched once, after all choices are made, to report final scores.",
+"Settings such as the polynomial degree, the number of neighbours k or the tree depth are chosen on the validation set only.",
+"After a choice is made, the chosen model is refitted on the full training set.",
+"Scaling and encoding are learned inside Pipelines from the training data only.",
+"The identifier column is dropped; TotalCharges is never used as an input in Part A, and Churn is never used as an input in either part."
+]
+},
+{
+"t": "h1",
+"text": "4. ANALYSIS ON DATASET"
+},
+{
+"t": "p",
+"text": "This chapter reports seven analyses. Each follows the prescribed structure: (i) Introduction, (ii) General Description, (iii) Specific Requirements, Functions and Formulas, (iv) Analysis Results, and (v) Visualization with interpretation. Every number in the tables and text is produced by the notebook and stored in the results folder."
+},
+{
+"t": "h2",
+"text": "4.1 Objective O1: Understanding the data"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "Before any model is built, an analyst needs to know how the variables relate to each other and which customer groups churn most. Correlation shows which numeric variables move together; comparing churn rates across groups shows where the problem is concentrated and which attributes are unlikely to help a model."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "Three things are examined: the Pearson correlation between the numeric variables and the two targets; the average of each numeric variable for churners and stayers; and the churn rate in every group of every categorical attribute. For each attribute the *spread* (highest group rate minus lowest group rate) summarises how much the attribute separates churners from stayers."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O1",
+"head": [
+"Purpose",
+"Function"
+],
+"rows": [
+[
+"Correlation matrix",
+"pandas.DataFrame.corr(method=\"pearson\")"
+],
+[
+"Group statistics",
+"pandas.DataFrame.groupby().agg()"
+],
+[
+"Plots",
+"matplotlib, seaborn (heatmap, histplot, bar)"
+]
+],
+"widths": [
+0.4,
+0.6
+],
+"align": [
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The Pearson correlation coefficient between two variables x and y with n observations is:"
+},
+{
+"t": "eq",
+"text": "r = Σ (xᵢ − x̄)(yᵢ − ȳ) / √( Σ (xᵢ − x̄)² · Σ (yᵢ − ȳ)² )        (1)"
+},
+{
+"t": "p",
+"text": "r lies between −1 (perfect negative linear relationship) and +1 (perfect positive); 0 means no linear relationship. With the binary churn indicator (0/1), r measures how strongly a numeric variable differs between churners and stayers. The spread of an attribute is:"
+},
+{
+"t": "eq",
+"text": "spread = max over groups of churn rate − min over groups of churn rate        (2)"
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "table",
+"caption": "Mean of the numeric variables by churn status",
+"head": [
+"Variable",
+"Stayed",
+"Churned"
+],
+"rows": [
+[
+"tenure",
+"37.57",
+"17.98"
+],
+[
+"MonthlyCharges",
+"61.27",
+"74.44"
+],
+[
+"TotalCharges",
+"2,549.91",
+"1,531.80"
+]
+],
+"widths": [
+0.4,
+0.3,
+0.3
+],
+"align": [
+"l",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "Churners have been customers for 18.0 months on average against 37.6 for stayers, yet they pay more each month (USD 74.44 against 61.27). Because they leave early, their accumulated TotalCharges is lower (USD 1,532 against 2,550)."
+},
+{
+"t": "table",
+"caption": "Pearson correlation matrix",
+"head": [
+"",
+"tenure",
+"MonthlyCharges",
+"TotalCharges",
+"SeniorCitizen",
+"ChurnFlag"
+],
+"rows": [
+[
+"tenure",
+"1.000",
+"0.248",
+"0.826",
+"0.017",
+"-0.352"
+],
+[
+"MonthlyCharges",
+"0.248",
+"1.000",
+"0.651",
+"0.220",
+"0.193"
+],
+[
+"TotalCharges",
+"0.826",
+"0.651",
+"1.000",
+"0.103",
+"-0.198"
+],
+[
+"SeniorCitizen",
+"0.017",
+"0.220",
+"0.103",
+"1.000",
+"0.151"
+],
+[
+"ChurnFlag",
+"-0.352",
+"0.193",
+"-0.198",
+"0.151",
+"1.000"
+]
+],
+"widths": [
+0.2,
+0.16,
+0.16,
+0.16,
+0.16,
+0.16
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "TotalCharges is strongly correlated with tenure (r = 0.83) and fairly strongly with MonthlyCharges (r = 0.65), which makes both natural inputs for the regression in Part A. Tenure has the strongest correlation with churn (r = -0.35): longer-standing customers churn less. MonthlyCharges has a weak positive correlation with churn (0.19)."
+},
+{
+"t": "table",
+"caption": "Churn-rate spread of each categorical attribute (largest first)",
+"head": [
+"Attribute",
+"Highest-churn group",
+"Rate",
+"Lowest-churn group",
+"Rate",
+"Spread"
+],
+"rows": [
+[
+"Contract",
+"Month-to-month",
+"42.7%",
+"Two year",
+"2.8%",
+"39.9%"
+],
+[
+"InternetService",
+"Fiber optic",
+"41.9%",
+"No",
+"7.4%",
+"34.5%"
+],
+[
+"OnlineSecurity",
+"No",
+"41.8%",
+"No internet service",
+"7.4%",
+"34.4%"
+],
+[
+"TechSupport",
+"No",
+"41.6%",
+"No internet service",
+"7.4%",
+"34.2%"
+],
+[
+"OnlineBackup",
+"No",
+"39.9%",
+"No internet service",
+"7.4%",
+"32.5%"
+],
+[
+"DeviceProtection",
+"No",
+"39.1%",
+"No internet service",
+"7.4%",
+"31.7%"
+],
+[
+"PaymentMethod",
+"Electronic check",
+"45.3%",
+"Credit card (automatic)",
+"15.2%",
+"30.0%"
+],
+[
+"StreamingMovies",
+"No",
+"33.7%",
+"No internet service",
+"7.4%",
+"26.3%"
+],
+[
+"StreamingTV",
+"No",
+"33.5%",
+"No internet service",
+"7.4%",
+"26.1%"
+],
+[
+"SeniorCitizen",
+"1",
+"41.7%",
+"0",
+"23.6%",
+"18.1%"
+],
+[
+"PaperlessBilling",
+"Yes",
+"33.6%",
+"No",
+"16.3%",
+"17.2%"
+],
+[
+"Dependents",
+"No",
+"31.3%",
+"Yes",
+"15.4%",
+"15.8%"
+],
+[
+"Partner",
+"No",
+"33.0%",
+"Yes",
+"19.7%",
+"13.3%"
+],
+[
+"MultipleLines",
+"Yes",
+"28.6%",
+"No phone service",
+"24.9%",
+"3.7%"
+],
+[
+"PhoneService",
+"Yes",
+"26.7%",
+"No",
+"24.9%",
+"1.8%"
+],
+[
+"gender",
+"Female",
+"26.9%",
+"Male",
+"26.2%",
+"0.8%"
+]
+],
+"widths": [
+0.19,
+0.2,
+0.1,
+0.22,
+0.1,
+0.19
+],
+"align": [
+"l",
+"l",
+"r",
+"l",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The attributes that separate churners from stayers most are **Contract** (spread 39.9%), **InternetService** (34.5%), **OnlineSecurity** (34.4%) and the other protection and support services and payment method. At the bottom, **gender** (0.8%), **PhoneService** (1.8%) and **MultipleLines** (3.7%) barely differ between groups, so they carry almost no information about churn on their own."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig02_churn_rate_by_segment.png",
+"caption": "Churn rate by key customer segments (dashed line marks the overall rate of 26.5%)",
+"w": 5.9,
+"px_w": 566,
+"px_h": 780
+},
+{
+"t": "p",
+"text": "Figure 2 shows the largest gaps. Month-to-month customers churn at 42.7%, compared with 11.3% on one-year and 2.8% on two-year contracts. Fibre-optic customers churn at 41.9% against 19.0% for DSL. Electronic-check payers churn at 45.3%, about three times the rate of customers who pay by bank transfer or credit card. Customers without online security churn at 41.8% against 14.6% with it. These are associations; the data cannot say whether the services keep customers or whether already committed customers are the ones who buy them."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig03_correlation_heatmap.png",
+"caption": "Pearson correlation matrix of the numeric variables and the churn indicator",
+"w": 4.3,
+"px_w": 412,
+"px_h": 359
+},
+{
+"t": "p",
+"text": "The heat map shows the strong blocks of positive correlation among tenure, MonthlyCharges and TotalCharges and the negative correlation of tenure and TotalCharges with churn."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig04_numeric_distributions.png",
+"caption": "Distributions of tenure, monthly charges and total charges for churners and stayers",
+"w": 6.3,
+"px_w": 604,
+"px_h": 206
+},
+{
+"t": "p",
+"text": "Churners are concentrated at short tenures and at higher monthly charges. Stayers include a large block of low-priced, phone-only customers who almost never leave, and a peak at 72 months, the end of the observation window."
+},
+{
+"t": "p",
+"text": "**Conclusion of O1.** Tenure, contract type, internet service and protection services are the main correlates of churn; gender and phone service are not. TotalCharges is strongly tied to tenure and MonthlyCharges."
+},
+{
+"t": "h2",
+"text": "4.2 Objective O2: Simple Linear Regression"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "The simplest way to predict a number is a straight line through one input. For lifetime revenue, the natural input is tenure: the longer a customer stays, the more they have been billed. This objective measures how far a straight line in tenure alone can go."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "TotalCharges is the target (y) and tenure in months is the single input (x). The line is fitted on the training set by Ordinary Least Squares (OLS), which chooses the intercept and slope that minimise the sum of squared residuals. The slope and intercept are calculated by hand from the closed-form formulas and checked against scikit-learn. The fit is judged on the training and test sets with MAE, MSE, RMSE and R-squared, and the residuals are inspected for patterns."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O2",
+"head": [
+"Purpose",
+"Function"
+],
+"rows": [
+[
+"OLS fit",
+"sklearn.linear_model.LinearRegression"
+],
+[
+"Closed-form check",
+"numpy (sums, matrix inverse)"
+],
+[
+"Metrics",
+"churn_lib.reg_metrics: mean_absolute_error, mean_squared_error, r2_score"
+]
+],
+"widths": [
+0.4,
+0.6
+],
+"align": [
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The model is ŷ = β₀ + β₁x. OLS minimises the sum of squared errors, giving:"
+},
+{
+"t": "eq",
+"text": "β₁ = Σ (xᵢ − x̄)(yᵢ − ȳ) / Σ (xᵢ − x̄)²,     β₀ = ȳ − β₁x̄        (3)"
+},
+{
+"t": "p",
+"text": "For several inputs the same idea is written in matrix form (the normal equation), which is used again in O3:"
+},
+{
+"t": "eq",
+"text": "β = (XᵀX)⁻¹ Xᵀy        (4)"
+},
+{
+"t": "p",
+"text": "The evaluation metrics, with n test observations, actual values yᵢ, predictions ŷᵢ and mean ȳ, are:"
+},
+{
+"t": "eq",
+"text": "MAE = (1/n) Σ |yᵢ − ŷᵢ|,     MSE = (1/n) Σ (yᵢ − ŷᵢ)²,     RMSE = √MSE        (5)"
+},
+{
+"t": "eq",
+"text": "R² = 1 − Σ (yᵢ − ŷᵢ)² / Σ (yᵢ − ȳ)²        (6)"
+},
+{
+"t": "p",
+"text": "MAE is the average size of the error in dollars; MSE squares the errors and so punishes large ones; RMSE brings MSE back to dollars; R² is the share of the variation in y that the model explains (1 is perfect, 0 is no better than predicting the mean)."
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "table",
+"caption": "OLS estimates for TotalCharges on tenure",
+"head": [
+"Quantity",
+"By formula",
+"By scikit-learn"
+],
+"rows": [
+[
+"Slope (USD per month of tenure)",
+"76.97",
+"76.97"
+],
+[
+"Intercept (USD)",
+"-201.04",
+"-201.04"
+],
+[
+"Pearson r (tenure, TotalCharges), training set",
+"0.830",
+""
+]
+],
+"widths": [
+0.5,
+0.25,
+0.25
+],
+"align": [
+"l",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The hand calculation and scikit-learn agree to many decimals, and the matrix formula gives the same pair (-201.04, 76.97). The fitted line is TotalCharges = -201.04 + 76.97 x tenure: each extra month of tenure is associated with about USD 77 more billed."
+},
+{
+"t": "table",
+"caption": "Simple Linear Regression: error measures",
+"head": [
+"Data set",
+"MAE (USD)",
+"MSE",
+"RMSE (USD)",
+"R-squared"
+],
+"rows": [
+[
+"Train",
+"879.1",
+"1,618,406",
+"1,272.2",
+"0.688"
+],
+[
+"Test",
+"876.2",
+"1,682,652",
+"1,297.2",
+"0.657"
+]
+],
+"widths": [
+0.2,
+0.2,
+0.2,
+0.2,
+0.2
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "On the test set the model explains 66% of the variation (R² = 0.657), with a typical error (MAE) of about USD 876. Training and test results are close, so the model does not overfit, but an RMSE of USD 1,297 is large compared with a mean TotalCharges of about USD 2,280. The residuals have a mean of -54, but their spread grows with tenure (correlation of absolute residual with tenure 0.70)."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig05_simple_regression.png",
+"caption": "Simple linear regression: fitted line on the training set (left) and residuals on the test set (right)",
+"w": 6.3,
+"px_w": 604,
+"px_h": 241
+},
+{
+"t": "p",
+"text": "The scatter plot shows why one line is not enough. At each tenure the points fan out into a band: customers with a low monthly bill sit near the bottom of the fan and customers with a high bill near the top, and the single line runs through the middle. The residual plot shows the same thing as a funnel, with errors of several thousand dollars for long-tenure customers. A linear model assumes errors of similar size everywhere; here that assumption fails. The missing ingredient is the monthly charge, which is added in O3."
+},
+{
+"t": "p",
+"text": "**Conclusion of O2.** Tenure alone explains about two-thirds of the variation in lifetime revenue. The remaining error follows a clear pattern, which suggests adding MonthlyCharges."
+},
+{
+"t": "h2",
+"text": "4.3 Objective O3: Multiple and Polynomial Regression"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "O2 showed that tenure alone leaves a fan-shaped error. Two natural improvements are to use more inputs (Multiple Linear Regression) and to let the model bend and combine inputs (Polynomial Regression). This objective tests how much each helps."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "Multiple Linear Regression uses SeniorCitizen, tenure, MonthlyCharges and the 15 one-hot encoded categorical attributes, 18 inputs in the sense of columns before encoding. Polynomial Regression takes tenure and MonthlyCharges, standardises them, creates powers and products up to a chosen degree, and fits a linear model on those new columns. The degree (1 to 5) is chosen on the validation set as the one with the lowest RMSE; a higher degree always fits the fit set at least as well, so the validation set is what reveals overfitting."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O3",
+"head": [
+"Purpose",
+"Function"
+],
+"rows": [
+[
+"Multiple regression",
+"LinearRegression inside a Pipeline with one-hot encoding"
+],
+[
+"Polynomial terms",
+"sklearn.preprocessing.PolynomialFeatures"
+],
+[
+"Scaling",
+"sklearn.preprocessing.StandardScaler"
+],
+[
+"Validation scores",
+"churn_lib.reg_metrics"
+]
+],
+"widths": [
+0.4,
+0.6
+],
+"align": [
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "eq",
+"text": "ŷ = β₀ + β₁x₁ + β₂x₂ + … + β_p x_p        (7)"
+},
+{
+"t": "eq",
+"text": "Degree 2 with inputs t (tenure) and m (monthly charge):  ŷ = β₀ + β₁t + β₂m + β₃t² + β₄tm + β₅m²        (8)"
+},
+{
+"t": "p",
+"text": "In Equation 8, the product term tm lets the effect of tenure depend on the monthly charge. This matches how billing works: total charges are roughly the monthly charge multiplied by the number of months."
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "table",
+"caption": "Polynomial degree selection (fit set and validation set)",
+"head": [
+"Degree",
+"Fit RMSE (USD)",
+"Validation RMSE (USD)",
+"Validation R-squared"
+],
+"rows": [
+[
+"1",
+"729.81",
+"740.33",
+"0.894"
+],
+[
+"2",
+"68.20",
+"65.11",
+"0.999"
+],
+[
+"3",
+"68.19",
+"65.12",
+"0.999"
+],
+[
+"4",
+"68.16",
+"65.19",
+"0.999"
+],
+[
+"5",
+"68.07",
+"65.32",
+"0.999"
+]
+],
+"widths": [
+0.15,
+0.27,
+0.31,
+0.27
+],
+"align": [
+"c",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "Moving from degree 1 (a plain plane in tenure and monthly charge) to degree 2 cuts the validation RMSE from USD 740 to USD 65 and lifts R² from 0.894 to 0.999. Degrees 3 to 5 bring no further gain (the validation RMSE rises very slightly), so **degree 2** is selected: it is the simplest model that captures the pattern."
+},
+{
+"t": "table",
+"caption": "Multiple Linear Regression: largest coefficients (USD per unit, other inputs held fixed)",
+"head": [
+"Input",
+"Coefficient"
+],
+"rows": [
+[
+"PaymentMethod_Mailed check",
+"183.1"
+],
+[
+"OnlineBackup_Yes",
+"164.9"
+],
+[
+"Contract_Two year",
+"-149.1"
+],
+[
+"PaymentMethod_Electronic check",
+"-133.9"
+],
+[
+"OnlineBackup_No",
+"-133.6"
+],
+[
+"OnlineSecurity_Yes",
+"132.9"
+],
+[
+"Intercept",
+"-1,680.6"
+]
+],
+"widths": [
+0.65,
+0.35
+],
+"align": [
+"l",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "Multiple Linear Regression, fitted with all inputs, has a test R² of 0.900 and a test RMSE of USD 702, compared with 0.657 and USD 1,297 for tenure alone. Adding inputs helps a great deal, but the model is still linear and cannot represent the tenure-by-charge product. The coefficients of the categorical inputs in the table are mostly small adjustments that compensate for the missing interaction, not business effects, and should not be read as causes."
+},
+{
+"t": "p",
+"text": "**Why the polynomial model is so accurate.** For customers with tenure above zero, TotalCharges divided by (tenure x MonthlyCharges) has a median of 1.00, and 80% of customers lie within 5% of exactly 1. TotalCharges is therefore close to the product of tenure and monthly charge by the way bills accumulate. A degree-2 polynomial contains that product, so it fits almost perfectly. This is a legitimate regression result, but the very high R² reflects a near-arithmetical relationship in the data and should not be presented as a deep discovery."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig06_polynomial_degree.png",
+"caption": "RMSE of polynomial regression for degrees 1 to 5 on the fit set and the validation set",
+"w": 5.0,
+"px_w": 480,
+"px_h": 300
+},
+{
+"t": "p",
+"text": "The error collapses between degree 1 and degree 2 and is flat afterwards; the fit and validation curves lie almost on top of each other, so there is no sign of overfitting up to degree 5. The dashed line marks the selected degree."
+},
+{
+"t": "p",
+"text": "**Conclusion of O3.** More inputs reduce the error a lot, and allowing the tenure-by-charge product reduces it by another order of magnitude. Degree 2 is enough."
+},
+{
+"t": "h2",
+"text": "4.4 Objective O4: Comparing four regression models"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "With three regression ideas in hand, the practical question is which model should be used for prediction. A fair comparison needs the same data for every model, a selection rule fixed in advance, and a look at both training and test error to detect overfitting."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "Four models are compared: (1) Simple Linear Regression on tenure, (2) Multiple Linear Regression on all inputs, (3) Polynomial Regression of the degree chosen in O3, and (4) Random Forest Regression on all inputs. The Random Forest settings (maximum depth and minimum leaf size) are chosen from a 12-combination grid on the validation set. **Selection rule, fixed before the test set was used:** the model with the lowest validation RMSE wins, and if models are within 1% of each other the simpler one is preferred. The winner is refitted on the full training set and its test scores are reported with MAE, MSE, RMSE and R²."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O4",
+"head": [
+"Purpose",
+"Function"
+],
+"rows": [
+[
+"Random Forest regression",
+"sklearn.ensemble.RandomForestRegressor"
+],
+[
+"Settings grid",
+"itertools.product over depth and leaf size"
+],
+[
+"Metrics",
+"churn_lib.reg_metrics"
+],
+[
+"Plots",
+"matplotlib scatter, bar and histogram"
+]
+],
+"widths": [
+0.4,
+0.6
+],
+"align": [
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "A Random Forest builds many decision trees, each on a bootstrap sample of the rows and a random subset of the inputs at every split, and averages their predictions (Breiman, 2001). For regression, each tree splits the data to reduce the squared error inside the resulting groups and predicts the group mean:"
+},
+{
+"t": "eq",
+"text": "ŷ(x) = (1/T) Σ_{t=1..T} f_t(x)        (9)"
+},
+{
+"t": "p",
+"text": "where T is the number of trees (200 here) and f_t is the prediction of tree t. Averaging many different trees reduces the variance of a single tree, which is the main reason forests are accurate; they need no scaling and can capture curves and interactions without being told which ones to use."
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "p",
+"text": "The grid search on the validation set selected a maximum depth of 12 and a minimum leaf size of 1 for the forest (200 trees)."
+},
+{
+"t": "table",
+"caption": "Regression models: validation RMSE and test-set error measures",
+"head": [
+"Model",
+"Validation RMSE",
+"Test MAE",
+"Test MSE",
+"Test RMSE",
+"Test R-squared"
+],
+"rows": [
+[
+"1. Simple Linear",
+"1,313.3",
+"876.2",
+"1,682,652",
+"1,297.2",
+"0.6570"
+],
+[
+"2. Multiple Linear",
+"697.3",
+"558.8",
+"492,165",
+"701.5",
+"0.8997"
+],
+[
+"3. Polynomial",
+"65.1",
+"44.9",
+"4,382",
+"66.2",
+"0.9991"
+],
+[
+"4. Random Forest",
+"80.8",
+"53.5",
+"6,326",
+"79.5",
+"0.9987"
+]
+],
+"widths": [
+0.24,
+0.15,
+0.13,
+0.15,
+0.15,
+0.18
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "table",
+"caption": "Overfitting check: training versus test",
+"head": [
+"Model",
+"Train RMSE",
+"Test RMSE",
+"Train R-squared",
+"Test R-squared"
+],
+"rows": [
+[
+"1. Simple Linear",
+"1,272.2",
+"1,297.2",
+"0.6884",
+"0.6570"
+],
+[
+"2. Multiple Linear",
+"687.3",
+"701.5",
+"0.9091",
+"0.8997"
+],
+[
+"3. Polynomial",
+"67.4",
+"66.2",
+"0.9991",
+"0.9991"
+],
+[
+"4. Random Forest",
+"34.4",
+"79.5",
+"0.9998",
+"0.9987"
+]
+],
+"widths": [
+0.28,
+0.18,
+0.18,
+0.18,
+0.18
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "**Polynomial Regression** has the lowest validation RMSE (USD 65.1) and is selected. On the test set it reaches MAE USD 44.9, RMSE USD 66.2 and R² 0.9991. The Random Forest is a close second (test RMSE USD 79.5) but is slightly worse, and Multiple and Simple Linear Regression are far behind (test RMSE USD 702 and USD 1,297)."
+},
+{
+"t": "p",
+"text": "The overfitting check favours the polynomial model too: its training and test RMSE are almost identical (USD 67.4 against 66.2), whereas the Random Forest fits the training data much better (RMSE USD 34.4) than new data (USD 79.5), a typical sign of mild overfitting. The polynomial model is also simpler and its equation can be written down. For the selected model the test residuals have a mean of 0.58 and a standard deviation of USD 66.2; 87% of predictions are within USD 100 of the actual value and 99.5% are within USD 250."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig07_actual_vs_predicted.png",
+"caption": "Actual versus predicted TotalCharges on the test set for the four regression models",
+"w": 5.6,
+"px_w": 537,
+"px_h": 500
+},
+{
+"t": "p",
+"text": "Points on the dashed diagonal are perfect predictions. Simple Linear Regression shows the funnel and a flat ceiling near USD 5,300 (the largest value a straight line in tenure can give for 72 months). Multiple Linear Regression is closer but curved away from the diagonal and even predicts negative values for new customers. The polynomial and Random Forest models lie on the diagonal."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig08_regression_metrics.png",
+"caption": "RMSE and R-squared on the training and test sets for the four regression models",
+"w": 6.3,
+"px_w": 604,
+"px_h": 242
+},
+{
+"t": "p",
+"text": "The bars make the ranking and the overfitting check visible at a glance: RMSE falls from about USD 1,300 to about USD 66 across the four models, and only the Random Forest shows a visible gap between its training and test bars."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig09_best_regression_residuals.png",
+"caption": "Residuals of the selected model (Polynomial Regression) on the test set",
+"w": 6.3,
+"px_w": 604,
+"px_h": 223
+},
+{
+"t": "p",
+"text": "The residuals are centred on zero and roughly symmetric with no funnel, so the main weakness of the simple model has gone."
+},
+{
+"t": "p",
+"text": "**Conclusion of O4.** Polynomial Regression is selected as the best model for predicting TotalCharges: lowest validation RMSE, no overfitting and the simplest equation. It is the regression model used for prediction in O7."
+},
+{
+"t": "h2",
+"text": "4.5 Objective O5: Comparing six classifiers for churn"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "Part B asks a yes/no question: will this customer churn? Many algorithms can answer it, and none is best everywhere. The syllabus covers six that differ in how they learn, and this objective compares them on equal terms."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "The six classifiers are Logistic Regression, k-Nearest Neighbours, Gaussian Naive Bayes, Decision Tree, Random Forest and Support Vector Machine, together with a majority-class baseline that always predicts \"stay\". All use the same encoded inputs and the same train, validation and test sets. One setting of each model is tuned on the validation set by the **F1 score**, because churners are a minority and F1 balances precision and recall. Logistic Regression, Decision Tree, Random Forest and SVM use balanced class weights, which make errors on churners count more. The final scores use the default threshold of 0.5."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O5",
+"head": [
+"Model",
+"scikit-learn class",
+"Setting tuned"
+],
+"rows": [
+[
+"Logistic Regression",
+"LogisticRegression",
+"C (inverse regularisation strength)"
+],
+[
+"k-Nearest Neighbours",
+"KNeighborsClassifier",
+"k (number of neighbours)"
+],
+[
+"Naive Bayes",
+"GaussianNB",
+"var_smoothing"
+],
+[
+"Decision Tree",
+"DecisionTreeClassifier",
+"max_depth"
+],
+[
+"Random Forest",
+"RandomForestClassifier",
+"max_depth (200 trees)"
+],
+[
+"Support Vector Machine",
+"SVC (RBF kernel)",
+"C"
+]
+],
+"widths": [
+0.28,
+0.34,
+0.38
+],
+"align": [
+"l",
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "h3",
+"text": "Algorithms in brief"
+},
+{
+"t": "p",
+"text": "**Logistic Regression** turns a weighted sum of the inputs into a probability with the logistic (sigmoid) function (Hosmer, Lemeshow and Sturdivant, 2013). **k-Nearest Neighbours** is a *lazy* learner: it stores the training data and predicts the majority class among the k closest customers (Cover and Hart, 1967). **Naive Bayes** applies Bayes' theorem and assumes the inputs are independent given the class (Domingos and Pazzani, 1997). **A Decision Tree** asks a sequence of yes/no questions on the inputs, choosing each split to make the groups purer, which gives readable rules (Breiman et al., 1984). **A Random Forest** averages many trees (Breiman, 2001). **A Support Vector Machine** finds the boundary with the widest margin between the classes, and the RBF kernel lets that boundary curve (Cortes and Vapnik, 1995)."
+},
+{
+"t": "eq",
+"text": "P(churn | x) = 1 / (1 + e^−(β₀ + β₁x₁ + … + β_p x_p))        (10)"
+},
+{
+"t": "eq",
+"text": "P(C | x) ∝ P(C) · Π_j P(x_j | C),     d(a, b) = √( Σ_j (a_j − b_j)² ),     Gini = 1 − Σ_k p_k²        (11)"
+},
+{
+"t": "p",
+"text": "Equation 11 shows the Naive Bayes rule, the Euclidean distance used by kNN and the Gini impurity used by decision trees. The evaluation measures are, with TP, FP, TN and FN the counts of the confusion matrix:"
+},
+{
+"t": "eq",
+"text": "Accuracy = (TP + TN) / n,     Precision = TP / (TP + FP),     Recall = TP / (TP + FN)        (12)"
+},
+{
+"t": "eq",
+"text": "F1 = 2 · Precision · Recall / (Precision + Recall),     LogLoss = −(1/n) Σ [ yᵢ ln pᵢ + (1 − yᵢ) ln(1 − pᵢ) ]        (13)"
+},
+{
+"t": "p",
+"text": "AUC is the area under the ROC curve, which plots the true positive rate against the false positive rate as the threshold moves; it equals the probability that a randomly chosen churner gets a higher score than a randomly chosen stayer (Fawcett, 2006). 0.5 is chance and 1 is perfect. Log loss measures how good the predicted *probabilities* are, and punishes confident wrong answers heavily; lower is better."
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "table",
+"caption": "Settings chosen on the validation set",
+"head": [
+"Model",
+"Setting",
+"Chosen value",
+"Validation F1"
+],
+"rows": [
+[
+"Logistic Regression",
+"C",
+"0.1",
+"0.6258"
+],
+[
+"k-Nearest Neighbours",
+"k",
+"81",
+"0.6053"
+],
+[
+"Naive Bayes",
+"var_smoothing",
+"1e-09",
+"0.5858"
+],
+[
+"Decision Tree",
+"max_depth",
+"10",
+"0.6188"
+],
+[
+"Random Forest",
+"max_depth",
+"12",
+"0.6322"
+],
+[
+"Support Vector Machine",
+"C",
+"2",
+"0.6251"
+]
+],
+"widths": [
+0.32,
+0.24,
+0.22,
+0.22
+],
+"align": [
+"l",
+"l",
+"c",
+"r"
+],
+"note": null
+},
+{
+"t": "table",
+"caption": "Test-set performance of all classifiers",
+"head": [
+"Model",
+"Accuracy",
+"Log loss",
+"AUC",
+"Precision",
+"Recall",
+"F1"
+],
+"rows": [
+[
+"Baseline (majority class)",
+"0.735",
+"0.579",
+"0.500",
+"0.000",
+"0.000",
+"0.000"
+],
+[
+"Logistic Regression",
+"0.742",
+"0.497",
+"0.841",
+"0.509",
+"0.786",
+"0.618"
+],
+[
+"k-Nearest Neighbours",
+"0.779",
+"0.443",
+"0.831",
+"0.584",
+"0.575",
+"0.580"
+],
+[
+"Naive Bayes",
+"0.695",
+"2.749",
+"0.801",
+"0.459",
+"0.837",
+"0.593"
+],
+[
+"Decision Tree",
+"0.742",
+"0.703",
+"0.815",
+"0.509",
+"0.775",
+"0.614"
+],
+[
+"Random Forest",
+"0.769",
+"0.462",
+"0.841",
+"0.548",
+"0.754",
+"0.634"
+],
+[
+"Support Vector Machine",
+"0.747",
+"0.448",
+"0.816",
+"0.515",
+"0.781",
+"0.621"
+]
+],
+"widths": [
+0.27,
+0.11,
+0.11,
+0.1,
+0.13,
+0.12,
+0.1
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "table",
+"caption": "Confusion matrices on the test set (actual churners: 374, actual stayers: 1,035)",
+"head": [
+"Model",
+"True negatives",
+"False positives",
+"False negatives",
+"True positives"
+],
+"rows": [
+[
+"Logistic Regression",
+"751",
+"284",
+"80",
+"294"
+],
+[
+"k-Nearest Neighbours",
+"882",
+"153",
+"159",
+"215"
+],
+[
+"Naive Bayes",
+"666",
+"369",
+"61",
+"313"
+],
+[
+"Decision Tree",
+"755",
+"280",
+"84",
+"290"
+],
+[
+"Random Forest",
+"802",
+"233",
+"92",
+"282"
+],
+[
+"Support Vector Machine",
+"760",
+"275",
+"82",
+"292"
+]
+],
+"widths": [
+0.3,
+0.175,
+0.175,
+0.175,
+0.175
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "Every real model is far better than the baseline: the baseline reaches 73.5% accuracy but its recall and F1 are zero because it never predicts churn. Among the six classifiers, the differences are modest. Logistic Regression and Random Forest tie for the best AUC (0.841); k-Nearest Neighbours has the best accuracy (0.779) and best log loss but the lowest recall of the six (0.575); Naive Bayes has the highest recall (0.837) but the lowest accuracy (0.695) and a very high log loss (2.75)."
+},
+{
+"t": "p",
+"text": "The log-loss values need care. Naive Bayes produces overconfident probabilities because the independence assumption counts related inputs (for example the several services) several times, so when it is wrong it is wrong with near-certainty. Class weights also push probabilities of the balanced models upwards, which raises their log loss relative to kNN. The F1 scores of the six models lie between 0.580 and 0.634; with only 374 churners in the test set, differences of about 0.01 are within noise."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig10_roc_curves.png",
+"caption": "ROC curves of all classifiers on the test set (AUC in brackets)",
+"w": 5.0,
+"px_w": 480,
+"px_h": 374
+},
+{
+"t": "p",
+"text": "The curves of the six classifiers are bunched together well above the diagonal, which again shows that the models have similar discriminating power. The baseline lies on the diagonal."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig11_classification_metrics.png",
+"caption": "Accuracy, precision, recall and F1 of the six classifiers on the test set",
+"w": 6.3,
+"px_w": 604,
+"px_h": 247
+},
+{
+"t": "p",
+"text": "The bars show the trade-off between accuracy and recall. Models that catch more churners (Naive Bayes, Logistic Regression, SVM) also raise more false alarms and so lose accuracy; kNN is the opposite."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig12_confusion_matrices.png",
+"caption": "Confusion matrices of the six classifiers on the test set",
+"w": 6.3,
+"px_w": 604,
+"px_h": 376
+},
+{
+"t": "p",
+"text": "Each matrix shows how many actual churners (bottom row) are caught and how many stayers are wrongly flagged (top right). The Random Forest raises fewer false alarms than Logistic Regression, the Decision Tree and the SVM while still catching about three-quarters of the churners."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig13_knn_k.png",
+"caption": "Validation F1 of k-nearest neighbours for different numbers of neighbours",
+"w": 4.2,
+"px_w": 403,
+"px_h": 264
+},
+{
+"t": "p",
+"text": "F1 rises as k grows, because larger neighbourhoods give smoother and less noisy predictions; the best value in the grid was k = 81, at the edge of the grid, so a still larger k might help slightly."
+},
+{
+"t": "p",
+"text": "**Conclusion of O5.** All six classifiers are far better than the baseline and close to each other; the choice depends on whether accuracy or recall matters more, which is why the selection rule below is stated explicitly."
+},
+{
+"t": "h2",
+"text": "4.6 Objective O6: Selecting the best classifier; rules and errors"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "Choosing a model is only half of the job. A manager also wants to know *why* it predicts churn, and an analyst wants to know where it fails. A shallow decision tree gives readable rules, the Random Forest gives an importance score for every input, and an error profile shows which churners are missed."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "**Selection rule, fixed before the test set was used:** the classifier with the highest validation F1 is chosen. This favours models that find churners without flooding the retention team with false alarms. Then three things are produced: the rules of a depth-3 decision tree; the importance of the inputs in the Random Forest; and an error profile of the selected classifier on the test set (true and false positives and negatives, and the share of churners missed in several groups)."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O6",
+"head": [
+"Purpose",
+"Function"
+],
+"rows": [
+[
+"Tree rules and plot",
+"sklearn.tree.export_text, plot_tree"
+],
+[
+"Random Forest importance",
+"RandomForestClassifier.feature_importances_"
+],
+[
+"Confusion matrix",
+"sklearn.metrics.confusion_matrix"
+],
+[
+"Error profile",
+"pandas groupby on TP / FP / FN / TN groups"
+]
+],
+"widths": [
+0.4,
+0.6
+],
+"align": [
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "eq",
+"text": "Importance(j) = Σ over splits on input j of (impurity decrease × share of samples reaching the split), averaged over all trees        (14)"
+},
+{
+"t": "p",
+"text": "Equation 14 describes the importance used by the Random Forest: an input that is often used for splits near the top of many trees, and that makes the groups much purer, gets a high score. The scores sum to 1. They show which inputs the model uses, not whether the relationship is causal."
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "table",
+"caption": "Validation F1 used for the selection",
+"head": [
+"Model",
+"Validation F1"
+],
+"rows": [
+[
+"Random Forest",
+"0.6322"
+],
+[
+"Logistic Regression",
+"0.6258"
+],
+[
+"Support Vector Machine",
+"0.6251"
+],
+[
+"Decision Tree",
+"0.6188"
+],
+[
+"k-Nearest Neighbours",
+"0.6053"
+],
+[
+"Naive Bayes",
+"0.5858"
+]
+],
+"widths": [
+0.6,
+0.4
+],
+"align": [
+"l",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "**Random Forest** has the highest validation F1 (0.6322) and is selected, although the margin over Logistic Regression (0.6258) and SVM (0.6251) is small. On the test set it achieves accuracy 0.769, AUC 0.841, precision 0.548, recall 0.754, F1 0.634 and log loss 0.462: it identifies 282 of 374 churners and raises 233 false alarms."
+},
+{
+"t": "p",
+"text": "**Decision-tree rules.** A tree limited to depth 3 can be read as a short list of rules (Figure 14). Customers on a month-to-month contract with fibre-optic internet are classified as churners; month-to-month customers without fibre are classified as churners only if their tenure is at most 5 months; customers on longer contracts are classified as stayers. This tiny tree reaches test accuracy 0.746, recall 0.783 and F1 0.621, close to the full forest, which shows that most of the useful signal is in a few simple rules."
+},
+{
+"t": "table",
+"caption": "Random Forest: the ten most important inputs",
+"head": [
+"Rank",
+"Input",
+"Importance"
+],
+"rows": [
+[
+"1",
+"tenure",
+"0.1271"
+],
+[
+"2",
+"Contract_Month-to-month",
+"0.1210"
+],
+[
+"3",
+"TotalCharges",
+"0.1021"
+],
+[
+"4",
+"MonthlyCharges",
+"0.0722"
+],
+[
+"5",
+"OnlineSecurity_No",
+"0.0620"
+],
+[
+"6",
+"Contract_Two year",
+"0.0615"
+],
+[
+"7",
+"TechSupport_No",
+"0.0538"
+],
+[
+"8",
+"InternetService_Fiber optic",
+"0.0477"
+],
+[
+"9",
+"PaymentMethod_Electronic check",
+"0.0349"
+],
+[
+"10",
+"OnlineBackup_No",
+"0.0194"
+]
+],
+"widths": [
+0.12,
+0.58,
+0.3
+],
+"align": [
+"c",
+"l",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The most important inputs are tenure (0.127), the month-to-month contract indicator (0.121), TotalCharges (0.102) and MonthlyCharges (0.072), followed by missing online security and a two-year contract. This agrees with O1: contract, tenure and protection services matter most, and gender is irrelevant."
+},
+{
+"t": "table",
+"caption": "Profile of prediction outcomes (Random Forest, test set)",
+"head": [
+"Outcome",
+"Customers",
+"Mean tenure (months)",
+"Mean monthly charge (USD)",
+"Month-to-month",
+"Fibre optic"
+],
+"rows": [
+[
+"TP",
+"282",
+"11.2",
+"73.6",
+"99%",
+"76%"
+],
+[
+"FP",
+"233",
+"17.7",
+"74.0",
+"97%",
+"71%"
+],
+[
+"FN",
+"92",
+"32.5",
+"70.1",
+"53%",
+"42%"
+],
+[
+"TN",
+"802",
+"43.3",
+"57.2",
+"27%",
+"24%"
+]
+],
+"widths": [
+0.13,
+0.14,
+0.19,
+0.22,
+0.17,
+0.15
+],
+"align": [
+"c",
+"r",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The missed churners (false negatives) look different from the detected ones: their mean tenure is 33 months against 11, and only 53% are on month-to-month contracts against 99% of detected churners. The model misses only 15% of month-to-month churners but 94% of the 36 one-year and all 9 two-year churners, and 77% of churners with more than four years of tenure. These groups are small, so the percentages are imprecise, but the direction is clear: churn among committed, long-standing customers is not explained by the available variables."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig14_decision_tree.png",
+"caption": "Decision tree of depth 3: readable churn rules (orange = stay, blue = churn)",
+"w": 6.3,
+"px_w": 604,
+"px_h": 309
+},
+{
+"t": "p",
+"text": "Each box shows the question asked, the share of customers reaching it and the class predicted. The tree makes the story of O1 explicit: contract type is the first question, then internet service and tenure."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig15_rf_importance.png",
+"caption": "Random Forest importance of the twelve most important inputs",
+"w": 5.0,
+"px_w": 480,
+"px_h": 319
+},
+{
+"t": "p",
+"text": "Tenure, contract and the charges dominate. The importance of TotalCharges is partly shared with tenure, because the two are strongly correlated."
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig16_error_analysis.png",
+"caption": "Share of actual churners missed by the selected classifier, by contract, tenure band and internet service",
+"w": 6.3,
+"px_w": 604,
+"px_h": 212
+},
+{
+"t": "p",
+"text": "The model is weakest exactly where churn is rare: annual contracts, long tenure and customers without fibre. A retention team should not rely on the score alone for these customers."
+},
+{
+"t": "p",
+"text": "**Conclusion of O6.** Random Forest is selected by validation F1. Its behaviour is explained by a few simple rules about contract, internet service and tenure, and its main weakness is missing churners among long-standing, contracted customers."
+},
+{
+"t": "h2",
+"text": "4.7 Objective O7: Using both selected models together"
+},
+{
+"t": "h3",
+"text": "i. Introduction"
+},
+{
+"t": "p",
+"text": "The two parts of the project answer different questions. The regression model says how much revenue a customer has generated, and the classifier says how likely the customer is to leave. A company would like to know which customers are *both* valuable and at risk. This objective combines the two predictions."
+},
+{
+"t": "h3",
+"text": "ii. General Description"
+},
+{
+"t": "p",
+"text": "For every customer in the test set, the selected regression model (Polynomial Regression) gives a predicted TotalCharges and the selected classifier (Random Forest) gives a churn probability. Customers are placed in four groups using two cut-offs: a churn probability of 0.5 and the median predicted TotalCharges (USD 1,380). The actual churn rate in each group is then checked against what really happened."
+},
+{
+"t": "h3",
+"text": "iii. Specific Requirements, Functions and Formulas"
+},
+{
+"t": "table",
+"caption": "Functions used in O7",
+"head": [
+"Purpose",
+"Function"
+],
+"rows": [
+[
+"Predicted revenue",
+"final_regression_model.predict"
+],
+[
+"Churn probability",
+"final_churn_classifier.predict_proba"
+],
+[
+"Grouping",
+"numpy.select on the two cut-offs"
+],
+[
+"Group summary",
+"pandas groupby"
+]
+],
+"widths": [
+0.4,
+0.6
+],
+"align": [
+"l",
+"l"
+],
+"note": null
+},
+{
+"t": "eq",
+"text": "group = f( P(churn) ≥ 0.5 ,  predicted TotalCharges ≥ median )        (15)"
+},
+{
+"t": "h3",
+"text": "iv. Analysis Results"
+},
+{
+"t": "table",
+"caption": "Customer priority groups on the test set",
+"head": [
+"Group",
+"Customers",
+"Actual churn rate",
+"Mean predicted TotalCharges (USD)",
+"Mean monthly charge (USD)"
+],
+"rows": [
+[
+"High risk, high revenue",
+"165",
+"42.4%",
+"2,998",
+"90.1"
+],
+[
+"High risk, lower revenue",
+"350",
+"60.6%",
+"369",
+"66.1"
+],
+[
+"Low risk, high revenue",
+"540",
+"10.6%",
+"4,182",
+"76.3"
+],
+[
+"Low risk, lower revenue",
+"354",
+"9.9%",
+"619",
+"31.4"
+]
+],
+"widths": [
+0.3,
+0.13,
+0.17,
+0.22,
+0.18
+],
+"align": [
+"l",
+"r",
+"r",
+"r",
+"r"
+],
+"note": null
+},
+{
+"t": "p",
+"text": "The grouping is informative. Customers flagged as high risk actually churn at 61% (lower-revenue group) and 42% (high-revenue group), while those flagged as low risk churn at only about 11% and 10%. The **165 customers who are both high risk and high revenue** (mean predicted TotalCharges USD 2,998, mean monthly bill USD 90) are the natural first target for a retention offer."
+},
+{
+"t": "p",
+"text": "One caution applies. TotalCharges is revenue *to date*, so a low value often just means a new customer. The \"lower revenue\" high-risk group (mostly recent month-to-month customers) may still be valuable in the future; the grouping ranks past revenue, not future value."
+},
+{
+"t": "h3",
+"text": "v. Visualization and Interpretation"
+},
+{
+"t": "fig",
+"file": "/home/claude/project/figures/fig17_priority_map.png",
+"caption": "Customer priority map: predicted TotalCharges against predicted churn probability (test set)",
+"w": 5.6,
+"px_w": 537,
+"px_h": 358
+},
+{
+"t": "p",
+"text": "Each dot is a customer. The upper right quadrant (red) holds the high-risk, high-revenue customers. The vertical stripe of upper-left dots shows the many new customers with low revenue so far and high churn risk."
+},
+{
+"t": "p",
+"text": "**Conclusion of O7.** Used together, the polynomial regression model and the Random Forest classifier split customers into groups whose actual churn rates differ by a factor of about six, and they identify a clear priority group."
+},
+{
+"t": "h1",
+"text": "5. CONCLUSION"
+},
+{
+"t": "p",
+"text": "The project analysed the IBM Telco Customer Churn data with the methods of the syllabus and answered each of the seven objectives with evidence."
+},
+{
+"t": "bullets",
+"items": [
+"**O1 (data).** The data are clean apart from 11 blank TotalCharges (tenure zero). Tenure, contract, internet service and protection services separate churners from stayers; gender and phone service do not. TotalCharges is strongly correlated with tenure (r = 0.83) and monthly charge (r = 0.65).",
+"**O2 (Simple Linear Regression).** TotalCharges = -201.0 + 77.0 x tenure. Test R² = 0.657, RMSE USD 1,297; the residuals fan out with tenure.",
+"**O3 (Multiple and Polynomial).** More inputs lift test R² to 0.900; a degree-2 polynomial in tenure and monthly charge reaches 0.999, because total charges are close to tenure times monthly charge.",
+"**O4 (regression comparison).** Polynomial Regression is selected: validation RMSE USD 65.1, test RMSE USD 66.2, MAE USD 44.9, no overfitting. Random Forest is a close second.",
+"**O5 (classification comparison).** All six classifiers beat the baseline with similar AUC (0.80 to 0.84) and F1 (0.58 to 0.63); they differ mainly in how they trade accuracy against recall.",
+"**O6 (best classifier).** Random Forest is selected by validation F1 (test accuracy 0.769, AUC 0.841, recall 0.754, F1 0.634). Its behaviour reduces to rules on contract, internet service and tenure; it misses churn among long-tenure, contracted customers.",
+"**O7 (combined use).** The two selected models rank customers into four groups with actual churn rates from about 10% to 61% and identify 165 high-risk, high-revenue customers as the first retention target."
+]
+},
+{
+"t": "h2",
+"text": "5.1 Recommendations"
+},
+{
+"t": "bullets",
+"items": [
+"Use the polynomial regression model to estimate customer lifetime revenue to date, and the Random Forest to flag customers at risk of churning.",
+"Focus retention effort first on customers who are high risk and high revenue, then on new month-to-month customers, where churn is highest.",
+"Encourage month-to-month customers to move to annual contracts, and examine why fibre-optic and electronic-check customers churn more.",
+"Offer online security and technical support to customers who lack them, and test the effect before scaling it.",
+"Treat long-tenure and annual-contract customers separately, because the classifier misses most of their churn."
+]
+},
+{
+"t": "h2",
+"text": "5.2 Limitations"
+},
+{
+"t": "bullets",
+"items": [
+"The company is fictional and the data are a single snapshot; results show a method and should not be generalised to a real operator.",
+"Relationships are associations, not causes.",
+"TotalCharges is almost arithmetic in tenure and monthly charge, so the near-perfect regression fit is expected; it is not a forecast of future revenue.",
+"A single train/validation/test split was used. With 374 churners in the test set, small differences between classifiers are not meaningful.",
+"Classifier settings were tuned over small grids, and the best k for kNN lay at the edge of its grid.",
+"No temporal validation was possible because the data carry no dates."
+]
+},
+{
+"t": "h1",
+"text": "6. FUTURE SCOPE"
+},
+{
+"t": "bullets",
+"items": [
+"**Forward-looking revenue.** Predict TotalCharges from information known at sign-up (excluding tenure) or predict revenue over the next months, to make the regression a genuine customer-lifetime-value model.",
+"**More data.** Usage, complaints, network quality and competitor offers would help explain churn among long-tenure customers.",
+"**More methods.** Larger settings grids, cross-validation, regularised regression and boosting methods can be tried once the basic comparison is understood.",
+"**Business evaluation.** Attach costs and benefits to retention offers and choose the threshold that maximises profit, ideally using a randomised experiment.",
+"**Time-based validation.** With dated data, train on the past and test on the future.",
+"**Deployment.** Wrap the saved models in a simple application (src/predict.py is a starting point) and monitor their accuracy over time.",
+"**Local data.** Repeat the study on an authentic telecom data set from an open-data portal."
+]
+},
+{
+"t": "h1",
+"text": "7. REFERENCES"
+},
+{
+"t": "refs",
+"items": [
+"Breiman, L. (2001). Random forests. *Machine Learning*, 45(1), 5–32.",
+"Breiman, L., Friedman, J. H., Olshen, R. A., & Stone, C. J. (1984). *Classification and Regression Trees*. Wadsworth.",
+"Cortes, C., & Vapnik, V. (1995). Support-vector networks. *Machine Learning*, 20(3), 273–297.",
+"Cover, T., & Hart, P. (1967). Nearest neighbor pattern classification. *IEEE Transactions on Information Theory*, 13(1), 21–27.",
+"Domingos, P., & Pazzani, M. (1997). On the optimality of the simple Bayesian classifier under zero-one loss. *Machine Learning*, 29(2–3), 103–130.",
+"Fawcett, T. (2006). An introduction to ROC analysis. *Pattern Recognition Letters*, 27(8), 861–874.",
+"Harris, C. R., et al. (2020). Array programming with NumPy. *Nature*, 585, 357–362.",
+"Hosmer, D. W., Lemeshow, S., & Sturdivant, R. X. (2013). *Applied Logistic Regression* (3rd ed.). Wiley.",
+"Hunter, J. D. (2007). Matplotlib: A 2D graphics environment. *Computing in Science & Engineering*, 9(3), 90–95.",
+"IBM. Telco customer churn sample data (GitHub repository IBM/telco-customer-churn-on-icp4d). https://github.com/IBM/telco-customer-churn-on-icp4d",
+"IBM Community. Telco customer churn (11.1.3+). https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2019/07/11/telco-customer-churn-1113",
+"James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An Introduction to Statistical Learning* (2nd ed.). Springer.",
+"Kaggle. Telco Customer Churn (blastchar). https://www.kaggle.com/datasets/blastchar/telco-customer-churn",
+"Kaufman, S., Rosset, S., Perlich, C., & Stitelman, O. (2012). Leakage in data mining: Formulation, detection, and avoidance. *ACM Transactions on Knowledge Discovery from Data*, 6(4), 15.",
+"McKinney, W. (2010). Data structures for statistical computing in Python. *Proceedings of the 9th Python in Science Conference*, 56–61.",
+"OpenML. telco-customer-churn, data set 42178. https://www.openml.org/d/42178",
+"Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825–2830.",
+"Virtanen, P., et al. (2020). SciPy 1.0: Fundamental algorithms for scientific computing in Python. *Nature Methods*, 17, 261–272.",
+"Waskom, M. L. (2021). seaborn: statistical data visualization. *Journal of Open Source Software*, 6(60), 3021."
+]
+}
+]

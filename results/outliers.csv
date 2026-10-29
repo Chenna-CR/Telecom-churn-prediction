@@ -1,0 +1,4 @@
+Variable,Lower fence,Upper fence,Outliers (IQR),Skewness
+tenure,-60.0,124.0,0,0.24
+MonthlyCharges,-46.02,171.38,0,-0.22
+TotalCharges,-4683.52,8868.67,0,0.96

@@ -1,0 +1,22 @@
+|--- Contract_Month-to-month <= 0.50
+|   |--- MonthlyCharges <= 93.67
+|   |   |--- OnlineSecurity_No <= 0.50
+|   |   |   |--- class: 0
+|   |   |--- OnlineSecurity_No >  0.50
+|   |   |   |--- class: 0
+|   |--- MonthlyCharges >  93.67
+|   |   |--- Contract_Two year <= 0.50
+|   |   |   |--- class: 0
+|   |   |--- Contract_Two year >  0.50
+|   |   |   |--- class: 0
+|--- Contract_Month-to-month >  0.50
+|   |--- InternetService_Fiber optic <= 0.50
+|   |   |--- tenure <= 5.50
+|   |   |   |--- class: 1
+|   |   |--- tenure >  5.50
+|   |   |   |--- class: 0
+|   |--- InternetService_Fiber optic >  0.50
+|   |   |--- tenure <= 13.50
+|   |   |   |--- class: 1
+|   |   |--- tenure >  13.50
+|   |   |   |--- class: 1

@@ -1,0 +1,5 @@
+group,customers,actual_churn_rate,mean_pred_revenue,mean_monthly
+"High risk, high revenue",165,0.424,2998.392,90.131
+"High risk, lower revenue",350,0.606,368.534,66.1
+"Low risk, high revenue",540,0.106,4181.615,76.271
+"Low risk, lower revenue",354,0.099,618.934,31.379

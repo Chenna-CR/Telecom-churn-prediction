@@ -1,0 +1,31 @@
+{
+  "regression_model": "3. Polynomial",
+  "classifier": "Random Forest",
+  "features": [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "tenure",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "regression_target": "TotalCharges",
+  "churn_threshold": 0.5,
+  "revenue_median": 1379.93,
+  "sklearn_version": "1.8.0",
+  "random_state": 42,
+  "created": "2026-10-28"
+}

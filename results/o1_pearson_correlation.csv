@@ -1,0 +1,6 @@
+,tenure,MonthlyCharges,TotalCharges,SeniorCitizen,ChurnFlag
+tenure,1.0,0.2479,0.8262,0.0166,-0.3522
+MonthlyCharges,0.2479,1.0,0.6512,0.2202,0.1934
+TotalCharges,0.8262,0.6512,1.0,0.103,-0.1983
+SeniorCitizen,0.0166,0.2202,0.103,1.0,0.1509
+ChurnFlag,-0.3522,0.1934,-0.1983,0.1509,1.0

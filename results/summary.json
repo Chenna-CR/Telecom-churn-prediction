@@ -1,0 +1,703 @@
+{
+ "md5": "3b0bfab28a8101b4e4fdd08025a5c235",
+ "n_rows": 7043,
+ "n_cols": 21,
+ "quality": {
+  "missing_cells_as_read": 0,
+  "duplicate_rows": 22,
+  "duplicate_ids": 0,
+  "blank_totalcharges": 11,
+  "blank_totalcharges_tenure_values": [
+   0
+  ],
+  "no_internet_service_rows": 1526,
+  "no_phone_service_rows": 682
+ },
+ "outliers": {
+  "tenure": 0,
+  "MonthlyCharges": 0,
+  "TotalCharges": 0
+ },
+ "desc": {
+  "tenure": {
+   "count": 7043.0,
+   "mean": 32.37,
+   "std": 24.56,
+   "min": 0.0,
+   "25%": 9.0,
+   "50%": 29.0,
+   "75%": 55.0,
+   "max": 72.0
+  },
+  "MonthlyCharges": {
+   "count": 7043.0,
+   "mean": 64.76,
+   "std": 30.09,
+   "min": 18.25,
+   "25%": 35.5,
+   "50%": 70.35,
+   "75%": 89.85,
+   "max": 118.75
+  },
+  "TotalCharges": {
+   "count": 7043.0,
+   "mean": 2279.73,
+   "std": 2266.79,
+   "min": 0.0,
+   "25%": 398.55,
+   "50%": 1394.55,
+   "75%": 3786.6,
+   "max": 8684.8
+  }
+ },
+ "n_features_after_encoding": 45,
+ "churn_rate": 0.2653698707936959,
+ "n_churn": 1869,
+ "n_stay": 5174,
+ "split": {
+  "n_fit": 4225,
+  "n_val": 1409,
+  "n_test": 1409,
+  "n_train": 5634,
+  "churn_fit": 0.26532544378698225,
+  "churn_val": 0.2654364797728886,
+  "churn_test": 0.2654364797728886
+ },
+ "o1_spread_top": [
+  {
+   "Variable": "Contract",
+   "Highest-churn group": "Month-to-month",
+   "Rate": 0.4271,
+   "Lowest-churn group": "Two year",
+   "Rate (low)": 0.0283,
+   "Spread": 0.3988
+  },
+  {
+   "Variable": "InternetService",
+   "Highest-churn group": "Fiber optic",
+   "Rate": 0.4189,
+   "Lowest-churn group": "No",
+   "Rate (low)": 0.074,
+   "Spread": 0.3449
+  },
+  {
+   "Variable": "OnlineSecurity",
+   "Highest-churn group": "No",
+   "Rate": 0.4177,
+   "Lowest-churn group": "No internet service",
+   "Rate (low)": 0.074,
+   "Spread": 0.3436
+  },
+  {
+   "Variable": "TechSupport",
+   "Highest-churn group": "No",
+   "Rate": 0.4164,
+   "Lowest-churn group": "No internet service",
+   "Rate (low)": 0.074,
+   "Spread": 0.3423
+  },
+  {
+   "Variable": "OnlineBackup",
+   "Highest-churn group": "No",
+   "Rate": 0.3993,
+   "Lowest-churn group": "No internet service",
+   "Rate (low)": 0.074,
+   "Spread": 0.3252
+  },
+  {
+   "Variable": "DeviceProtection",
+   "Highest-churn group": "No",
+   "Rate": 0.3913,
+   "Lowest-churn group": "No internet service",
+   "Rate (low)": 0.074,
+   "Spread": 0.3172
+  }
+ ],
+ "o1_spread_bottom": [
+  {
+   "Variable": "MultipleLines",
+   "Highest-churn group": "Yes",
+   "Rate": 0.2861,
+   "Lowest-churn group": "No phone service",
+   "Rate (low)": 0.2493,
+   "Spread": 0.0368
+  },
+  {
+   "Variable": "PhoneService",
+   "Highest-churn group": "Yes",
+   "Rate": 0.2671,
+   "Lowest-churn group": "No",
+   "Rate (low)": 0.2493,
+   "Spread": 0.0178
+  },
+  {
+   "Variable": "gender",
+   "Highest-churn group": "Female",
+   "Rate": 0.2692,
+   "Lowest-churn group": "Male",
+   "Rate (low)": 0.2616,
+   "Spread": 0.0076
+  }
+ ],
+ "o1_means": {
+  "No": {
+   "tenure": 37.57,
+   "MonthlyCharges": 61.27,
+   "TotalCharges": 2549.91
+  },
+  "Yes": {
+   "tenure": 17.98,
+   "MonthlyCharges": 74.44,
+   "TotalCharges": 1531.8
+  }
+ },
+ "corr": {
+  "tenure": {
+   "tenure": 1.0,
+   "MonthlyCharges": 0.2479,
+   "TotalCharges": 0.8262,
+   "SeniorCitizen": 0.0166,
+   "ChurnFlag": -0.3522
+  },
+  "MonthlyCharges": {
+   "tenure": 0.2479,
+   "MonthlyCharges": 1.0,
+   "TotalCharges": 0.6512,
+   "SeniorCitizen": 0.2202,
+   "ChurnFlag": 0.1934
+  },
+  "TotalCharges": {
+   "tenure": 0.8262,
+   "MonthlyCharges": 0.6512,
+   "TotalCharges": 1.0,
+   "SeniorCitizen": 0.103,
+   "ChurnFlag": -0.1983
+  },
+  "SeniorCitizen": {
+   "tenure": 0.0166,
+   "MonthlyCharges": 0.2202,
+   "TotalCharges": 0.103,
+   "SeniorCitizen": 1.0,
+   "ChurnFlag": 0.1509
+  },
+  "ChurnFlag": {
+   "tenure": -0.3522,
+   "MonthlyCharges": 0.1934,
+   "TotalCharges": -0.1983,
+   "SeniorCitizen": 0.1509,
+   "ChurnFlag": 1.0
+  }
+ },
+ "o2_ols": {
+  "slope": 76.96983895851248,
+  "intercept": -201.03750373196908,
+  "slope_sklearn": 76.96983895851247,
+  "intercept_sklearn": -201.03750373196863,
+  "r_pearson": 0.8296984390385461
+ },
+ "o2_metrics": {
+  "Train": {
+   "MAE": 879.063,
+   "MSE": 1618406.289,
+   "RMSE": 1272.166,
+   "R2": 0.688
+  },
+  "Test": {
+   "MAE": 876.176,
+   "MSE": 1682651.593,
+   "RMSE": 1297.171,
+   "R2": 0.657
+  }
+ },
+ "o2_normal_eq": [
+  -201.03750373196954,
+  76.96983895851248
+ ],
+ "o2_resid": {
+  "mean": -54.136086136978996,
+  "sd": 1296.0404610932462,
+  "corr_abs_resid_tenure": 0.6986399579482268
+ },
+ "o3_mlr_val_rmse": 697.2926085006741,
+ "o3_degree_table": [
+  {
+   "Degree": 1,
+   "Fit RMSE": 729.813,
+   "Validation RMSE": 740.334,
+   "Validation R2": 0.894
+  },
+  {
+   "Degree": 2,
+   "Fit RMSE": 68.202,
+   "Validation RMSE": 65.106,
+   "Validation R2": 0.999
+  },
+  {
+   "Degree": 3,
+   "Fit RMSE": 68.186,
+   "Validation RMSE": 65.125,
+   "Validation R2": 0.999
+  },
+  {
+   "Degree": 4,
+   "Fit RMSE": 68.156,
+   "Validation RMSE": 65.193,
+   "Validation R2": 0.999
+  },
+  {
+   "Degree": 5,
+   "Fit RMSE": 68.074,
+   "Validation RMSE": 65.324,
+   "Validation R2": 0.999
+  }
+ ],
+ "o3_best_degree": 2,
+ "o3_mlr_coef_top": [
+  {
+   "Feature": "PaymentMethod_Mailed check",
+   "Coefficient": 183.142
+  },
+  {
+   "Feature": "OnlineBackup_Yes",
+   "Coefficient": 164.926
+  },
+  {
+   "Feature": "Contract_Two year",
+   "Coefficient": -149.075
+  },
+  {
+   "Feature": "PaymentMethod_Electronic check",
+   "Coefficient": -133.928
+  },
+  {
+   "Feature": "OnlineBackup_No",
+   "Coefficient": -133.575
+  },
+  {
+   "Feature": "OnlineSecurity_Yes",
+   "Coefficient": 132.896
+  },
+  {
+   "Feature": "DeviceProtection_Yes",
+   "Coefficient": 127.787
+  },
+  {
+   "Feature": "TechSupport_Yes",
+   "Coefficient": 117.194
+  }
+ ],
+ "o3_mlr_intercept": -1680.5634245167266,
+ "o4_rf_params": {
+  "max_depth": 12,
+  "min_samples_leaf": 1,
+  "n_estimators": 200
+ },
+ "o4_best_regression": "3. Polynomial",
+ "o4_regression_table": [
+  {
+   "Model": "1. Simple Linear",
+   "Val_RMSE": 1313.3259,
+   "Train_MAE": 879.0629,
+   "Train_RMSE": 1272.166,
+   "Train_R2": 0.6884,
+   "Test_MAE": 876.1765,
+   "Test_MSE": 1682651.5926,
+   "Test_RMSE": 1297.1706,
+   "Test_R2": 0.657
+  },
+  {
+   "Model": "2. Multiple Linear",
+   "Val_RMSE": 697.2926,
+   "Train_MAE": 555.4854,
+   "Train_RMSE": 687.2958,
+   "Train_R2": 0.9091,
+   "Test_MAE": 558.8307,
+   "Test_MSE": 492164.5671,
+   "Test_RMSE": 701.5444,
+   "Test_R2": 0.8997
+  },
+  {
+   "Model": "3. Polynomial",
+   "Val_RMSE": 65.1058,
+   "Train_MAE": 45.1194,
+   "Train_RMSE": 67.4302,
+   "Train_R2": 0.9991,
+   "Test_MAE": 44.8615,
+   "Test_MSE": 4381.6285,
+   "Test_RMSE": 66.1939,
+   "Test_R2": 0.9991
+  },
+  {
+   "Model": "4. Random Forest",
+   "Val_RMSE": 80.784,
+   "Train_MAE": 23.128,
+   "Train_RMSE": 34.4152,
+   "Train_R2": 0.9998,
+   "Test_MAE": 53.4815,
+   "Test_MSE": 6325.9186,
+   "Test_RMSE": 79.5356,
+   "Test_R2": 0.9987
+  }
+ ],
+ "o4_best_resid": {
+  "mean": 0.5826846908406533,
+  "sd": 66.19130626886015,
+  "within_100": 0.8687012065294535,
+  "within_250": 0.9950319375443577
+ },
+ "o5_chosen": {
+  "Logistic Regression": {
+   "param": "C",
+   "value": 0.1,
+   "val_F1": 0.6258
+  },
+  "k-Nearest Neighbours": {
+   "param": "k",
+   "value": 81,
+   "val_F1": 0.6053
+  },
+  "Naive Bayes": {
+   "param": "var_smoothing",
+   "value": 1e-09,
+   "val_F1": 0.5858
+  },
+  "Decision Tree": {
+   "param": "max_depth",
+   "value": 10,
+   "val_F1": 0.6188
+  },
+  "Random Forest": {
+   "param": "max_depth",
+   "value": 12,
+   "val_F1": 0.6322
+  },
+  "Support Vector Machine": {
+   "param": "C",
+   "value": 2,
+   "val_F1": 0.6251
+  }
+ },
+ "o5_table": [
+  {
+   "Model": "Baseline (majority class)",
+   "Accuracy": 0.7346,
+   "LogLoss": 0.5787,
+   "AUC": 0.5,
+   "Precision": 0.0,
+   "Recall": 0.0,
+   "F1": 0.0
+  },
+  {
+   "Model": "Logistic Regression",
+   "Accuracy": 0.7417,
+   "LogLoss": 0.4975,
+   "AUC": 0.841,
+   "Precision": 0.5087,
+   "Recall": 0.7861,
+   "F1": 0.6176
+  },
+  {
+   "Model": "k-Nearest Neighbours",
+   "Accuracy": 0.7786,
+   "LogLoss": 0.4429,
+   "AUC": 0.831,
+   "Precision": 0.5842,
+   "Recall": 0.5749,
+   "F1": 0.5795
+  },
+  {
+   "Model": "Naive Bayes",
+   "Accuracy": 0.6948,
+   "LogLoss": 2.7487,
+   "AUC": 0.8008,
+   "Precision": 0.4589,
+   "Recall": 0.8369,
+   "F1": 0.5928
+  },
+  {
+   "Model": "Decision Tree",
+   "Accuracy": 0.7417,
+   "LogLoss": 0.703,
+   "AUC": 0.8148,
+   "Precision": 0.5088,
+   "Recall": 0.7754,
+   "F1": 0.6144
+  },
+  {
+   "Model": "Random Forest",
+   "Accuracy": 0.7693,
+   "LogLoss": 0.4622,
+   "AUC": 0.8408,
+   "Precision": 0.5476,
+   "Recall": 0.754,
+   "F1": 0.6344
+  },
+  {
+   "Model": "Support Vector Machine",
+   "Accuracy": 0.7466,
+   "LogLoss": 0.4478,
+   "AUC": 0.816,
+   "Precision": 0.515,
+   "Recall": 0.7807,
+   "F1": 0.6206
+  }
+ ],
+ "o5_cms": {
+  "Baseline (majority class)": [
+   [
+    1035,
+    0
+   ],
+   [
+    374,
+    0
+   ]
+  ],
+  "Logistic Regression": [
+   [
+    751,
+    284
+   ],
+   [
+    80,
+    294
+   ]
+  ],
+  "k-Nearest Neighbours": [
+   [
+    882,
+    153
+   ],
+   [
+    159,
+    215
+   ]
+  ],
+  "Naive Bayes": [
+   [
+    666,
+    369
+   ],
+   [
+    61,
+    313
+   ]
+  ],
+  "Decision Tree": [
+   [
+    755,
+    280
+   ],
+   [
+    84,
+    290
+   ]
+  ],
+  "Random Forest": [
+   [
+    802,
+    233
+   ],
+   [
+    92,
+    282
+   ]
+  ],
+  "Support Vector Machine": [
+   [
+    760,
+    275
+   ],
+   [
+    82,
+    292
+   ]
+  ]
+ },
+ "o6_best_classifier": "Random Forest",
+ "o6_val_f1": {
+  "Logistic Regression": 0.6258,
+  "k-Nearest Neighbours": 0.6053,
+  "Naive Bayes": 0.5858,
+  "Decision Tree": 0.6188,
+  "Random Forest": 0.6322,
+  "Support Vector Machine": 0.6251
+ },
+ "o6_tree_rules": "|--- Contract_Month-to-month <= 0.50\n|   |--- MonthlyCharges <= 93.67\n|   |   |--- OnlineSecurity_No <= 0.50\n|   |   |   |--- class: 0\n|   |   |--- OnlineSecurity_No >  0.50\n|   |   |   |--- class: 0\n|   |--- MonthlyCharges >  93.67\n|   |   |--- Contract_Two year <= 0.50\n|   |   |   |--- class: 0\n|   |   |--- Contract_Two year >  0.50\n|   |   |   |--- class: 0\n|--- Contract_Month-to-month >  0.50\n|   |--- InternetService_Fiber optic <= 0.50\n|   |   |--- tenure <= 5.50\n|   |   |   |--- class: 1\n|   |   |--- tenure >  5.50\n|   |   |   |--- class: 0\n|   |--- InternetService_Fiber optic >  0.50\n|   |   |--- tenure <= 13.50\n|   |   |   |--- class: 1\n|   |   |--- tenure >  13.50\n|   |   |   |--- class: 1\n",
+ "o6_tree_test": {
+  "Accuracy": 0.7459190915542938,
+  "LogLoss": 0.5171545285046558,
+  "AUC": 0.8144126688883723,
+  "Precision": 0.5140350877192983,
+  "Recall": 0.7834224598930482,
+  "F1": 0.6207627118644068
+ },
+ "o6_rf_top": [
+  {
+   "Feature": "tenure",
+   "Importance": 0.1271
+  },
+  {
+   "Feature": "Contract_Month-to-month",
+   "Importance": 0.121
+  },
+  {
+   "Feature": "TotalCharges",
+   "Importance": 0.1021
+  },
+  {
+   "Feature": "MonthlyCharges",
+   "Importance": 0.0722
+  },
+  {
+   "Feature": "OnlineSecurity_No",
+   "Importance": 0.062
+  },
+  {
+   "Feature": "Contract_Two year",
+   "Importance": 0.0615
+  },
+  {
+   "Feature": "TechSupport_No",
+   "Importance": 0.0538
+  },
+  {
+   "Feature": "InternetService_Fiber optic",
+   "Importance": 0.0477
+  },
+  {
+   "Feature": "PaymentMethod_Electronic check",
+   "Importance": 0.0349
+  },
+  {
+   "Feature": "OnlineBackup_No",
+   "Importance": 0.0194
+  }
+ ],
+ "o6_profile": [
+  {
+   "outcome": "TP",
+   "n": 282,
+   "mean_tenure": 11.227,
+   "mean_monthly": 73.636,
+   "share_m2m": 0.993,
+   "share_fiber": 0.755
+  },
+  {
+   "outcome": "FP",
+   "n": 233,
+   "mean_tenure": 17.661,
+   "mean_monthly": 73.997,
+   "share_m2m": 0.974,
+   "share_fiber": 0.712
+  },
+  {
+   "outcome": "FN",
+   "n": 92,
+   "mean_tenure": 32.511,
+   "mean_monthly": 70.105,
+   "share_m2m": 0.533,
+   "share_fiber": 0.424
+  },
+  {
+   "outcome": "TN",
+   "n": 802,
+   "mean_tenure": 43.263,
+   "mean_monthly": 57.163,
+   "share_m2m": 0.271,
+   "share_fiber": 0.243
+  }
+ ],
+ "o6_miss": {
+  "Contract": [
+   {
+    "Contract": "Month-to-month",
+    "churners": 329.0,
+    "missed_rate": 0.149
+   },
+   {
+    "Contract": "One year",
+    "churners": 36.0,
+    "missed_rate": 0.944
+   },
+   {
+    "Contract": "Two year",
+    "churners": 9.0,
+    "missed_rate": 1.0
+   }
+  ],
+  "tenure_band": [
+   {
+    "tenure_band": "0-12",
+    "churners": 215.0,
+    "missed_rate": 0.135
+   },
+   {
+    "tenure_band": "13-24",
+    "churners": 60.0,
+    "missed_rate": 0.15
+   },
+   {
+    "tenure_band": "25-48",
+    "churners": 64.0,
+    "missed_rate": 0.422
+   },
+   {
+    "tenure_band": "49-72",
+    "churners": 35.0,
+    "missed_rate": 0.771
+   }
+  ],
+  "InternetService": [
+   {
+    "InternetService": "DSL",
+    "churners": 97.0,
+    "missed_rate": 0.392
+   },
+   {
+    "InternetService": "Fiber optic",
+    "churners": 252.0,
+    "missed_rate": 0.155
+   },
+   {
+    "InternetService": "No",
+    "churners": 25.0,
+    "missed_rate": 0.6
+   }
+  ]
+ },
+ "o7_groups": [
+  {
+   "group": "High risk, high revenue",
+   "customers": 165,
+   "actual_churn_rate": 0.424,
+   "mean_pred_revenue": 2998.392,
+   "mean_monthly": 90.131
+  },
+  {
+   "group": "High risk, lower revenue",
+   "customers": 350,
+   "actual_churn_rate": 0.606,
+   "mean_pred_revenue": 368.534,
+   "mean_monthly": 66.1
+  },
+  {
+   "group": "Low risk, high revenue",
+   "customers": 540,
+   "actual_churn_rate": 0.106,
+   "mean_pred_revenue": 4181.615,
+   "mean_monthly": 76.271
+  },
+  {
+   "group": "Low risk, lower revenue",
+   "customers": 354,
+   "actual_churn_rate": 0.099,
+   "mean_pred_revenue": 618.934,
+   "mean_monthly": 31.379
+  }
+ ],
+ "o7_cuts": {
+  "revenue_median": 1379.93,
+  "risk": 0.5
+ }
+}

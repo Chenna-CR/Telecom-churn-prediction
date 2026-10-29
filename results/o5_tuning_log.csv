@@ -1,0 +1,28 @@
+Model,Setting,Value,Validation F1
+Logistic Regression,C,0.01,0.6254
+Logistic Regression,C,0.1,0.6258
+Logistic Regression,C,1.0,0.6237
+Logistic Regression,C,10.0,0.6203
+k-Nearest Neighbours,k,5.0,0.537
+k-Nearest Neighbours,k,11.0,0.5663
+k-Nearest Neighbours,k,21.0,0.5718
+k-Nearest Neighbours,k,31.0,0.5941
+k-Nearest Neighbours,k,51.0,0.5927
+k-Nearest Neighbours,k,81.0,0.6053
+Naive Bayes,var_smoothing,0.0,0.5858
+Naive Bayes,var_smoothing,0.0,0.5858
+Naive Bayes,var_smoothing,0.001,0.5852
+Naive Bayes,var_smoothing,0.1,0.5845
+Decision Tree,max_depth,3.0,0.608
+Decision Tree,max_depth,4.0,0.6006
+Decision Tree,max_depth,5.0,0.6102
+Decision Tree,max_depth,6.0,0.6034
+Decision Tree,max_depth,8.0,0.6114
+Decision Tree,max_depth,10.0,0.6188
+Random Forest,max_depth,4.0,0.6099
+Random Forest,max_depth,6.0,0.6151
+Random Forest,max_depth,8.0,0.6261
+Random Forest,max_depth,12.0,0.6322
+Support Vector Machine,C,0.5,0.6134
+Support Vector Machine,C,1.0,0.6133
+Support Vector Machine,C,2.0,0.6251

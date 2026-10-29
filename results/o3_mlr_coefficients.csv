@@ -1,0 +1,45 @@
+Feature,Coefficient
+PaymentMethod_Mailed check,183.142
+OnlineBackup_Yes,164.926
+Contract_Two year,-149.075
+PaymentMethod_Electronic check,-133.928
+OnlineBackup_No,-133.575
+OnlineSecurity_Yes,132.896
+DeviceProtection_Yes,127.787
+TechSupport_Yes,117.194
+OnlineSecurity_No,-101.545
+DeviceProtection_No,-96.436
+StreamingTV_Yes,87.881
+TechSupport_No,-85.843
+StreamingMovies_Yes,84.195
+Contract_Month-to-month,83.006
+InternetService_Fiber optic,75.951
+Contract_One year,66.069
+tenure,61.624
+MultipleLines_Yes,60.701
+StreamingTV_No,-56.53
+StreamingMovies_No,-52.844
+InternetService_DSL,-44.6
+MultipleLines_No,-42.066
+PaymentMethod_Bank transfer (automatic),-36.238
+StreamingTV_No internet service,-31.351
+StreamingMovies_No internet service,-31.351
+DeviceProtection_No internet service,-31.351
+OnlineBackup_No internet service,-31.351
+TechSupport_No internet service,-31.351
+OnlineSecurity_No internet service,-31.351
+InternetService_No,-31.351
+MonthlyCharges,30.339
+MultipleLines_No phone service,-18.636
+PhoneService_No,-18.636
+PhoneService_Yes,18.636
+SeniorCitizen,-17.435
+Dependents_Yes,-16.222
+Dependents_No,16.222
+PaymentMethod_Credit card (automatic),-12.977
+gender_Male,11.685
+gender_Female,-11.685
+Partner_No,-9.008
+Partner_Yes,9.008
+PaperlessBilling_Yes,-2.337
+PaperlessBilling_No,2.337

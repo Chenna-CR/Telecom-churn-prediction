@@ -1,0 +1,17 @@
+Variable,Highest-churn group,Rate,Lowest-churn group,Rate (low),Spread
+Contract,Month-to-month,0.4271,Two year,0.0283,0.3988
+InternetService,Fiber optic,0.4189,No,0.074,0.3449
+OnlineSecurity,No,0.4177,No internet service,0.074,0.3436
+TechSupport,No,0.4164,No internet service,0.074,0.3423
+OnlineBackup,No,0.3993,No internet service,0.074,0.3252
+DeviceProtection,No,0.3913,No internet service,0.074,0.3172
+PaymentMethod,Electronic check,0.4529,Credit card (automatic),0.1524,0.3004
+StreamingMovies,No,0.3368,No internet service,0.074,0.2628
+StreamingTV,No,0.3352,No internet service,0.074,0.2612
+SeniorCitizen,1,0.4168,0,0.2361,0.1808
+PaperlessBilling,Yes,0.3357,No,0.1633,0.1724
+Dependents,No,0.3128,Yes,0.1545,0.1583
+Partner,No,0.3296,Yes,0.1966,0.1329
+MultipleLines,Yes,0.2861,No phone service,0.2493,0.0368
+PhoneService,Yes,0.2671,No,0.2493,0.0178
+gender,Female,0.2692,Male,0.2616,0.0076
