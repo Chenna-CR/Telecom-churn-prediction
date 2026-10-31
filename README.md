@@ -23,7 +23,7 @@ Predictive-analysis project on the IBM *Telco Customer Churn* data, using only m
 ```
 data/        Telco-Customer-Churn.csv, DATASET_README.md
 notebooks/   churn_prediction.ipynb (executed), build_notebook.py
-src/         churn_lib.py (helpers), predict.py (score new customers with both models)
+src/         churn_lib.py (helpers), simple_analysis.py (readable main workflow), predict.py (score new customers with both models)
 figures/     17 PNG figures
 results/     all tables (CSV), summary.json, test predictions
 models/      final_regression_model.joblib, final_churn_classifier.joblib, model_metadata.json
@@ -38,7 +38,10 @@ python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\
 pip install -r requirements.txt
 jupyter notebook notebooks/churn_prediction.ipynb       # Run All (about 2 minutes)
 python src/predict.py data/Telco-Customer-Churn.csv results/scored_customers.csv
+python src/simple_analysis.py
 ```
+`src/simple_analysis.py` is the beginner-friendly version to show during a viva.
+The notebook remains the complete version that creates all figures and detailed outputs.
 Use the versions in `results/environment_versions.json` (scikit-learn 1.8.0) so the saved model files load.
 
 ## Method in brief

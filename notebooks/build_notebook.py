@@ -1,9 +1,14 @@
 """Builds notebooks/churn_prediction.ipynb (syllabus-aligned: Units I-III)."""
+import ast
+
 import nbformat as nbf
 
 nb = nbf.v4.new_notebook(); cells = []
 def md(t): cells.append(nbf.v4.new_markdown_cell(t.strip("\n")))
-def code(t): cells.append(nbf.v4.new_code_cell(t.strip("\n")))
+def code(t):
+    source = t.strip("\n")
+    source = ast.unparse(ast.parse(source))
+    cells.append(nbf.v4.new_code_cell(source))
 
 md(r"""
 # Predictive Analysis of Telecom Customers: Regression and Classification
